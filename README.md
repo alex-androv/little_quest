@@ -1,34 +1,47 @@
 # Little Quest Paywall
 
-A mobile-first demo paywall built with Nuxt 4, TypeScript, Tailwind CSS and Neon Postgres. Purchases are simulated; no payment SDK or real charges are involved.
+Мобильный paywall для условной детской игры. Пользователь выбирает один из двух тарифов, совершает тестовую покупку и получает доступ к полному контенту. Реальные платежи не используются.
 
-## Run locally
+## Технологии
 
-1. Install Node.js 20 or newer.
-2. Run `npm install`.
-3. Create a Neon project and copy its pooled connection string.
-4. Copy `.env.example` to `.env` and set `DATABASE_URL`.
-5. Run `npm run dev`.
+- Nuxt 4, Vue 3, TypeScript
+- Tailwind CSS
+- Neon Postgres
+- Nitro server routes
+- Render — деплой приложения
 
-The `purchases` table is created automatically on the first purchase or restore request. Each purchase stores its offer ID, timestamp and browser-generated device ID.
+## Локальный запуск
 
-## Project structure
+1. Установить Node.js 20 или новее.
+2. Установить зависимости: `npm install`.
+3. Создать файл `.env` в корне проекта и указать строку подключения к Neon:
 
-- `app/pages/index.vue` — paywall UI, plan selection, loading/error/success states and restore flow.
-- `app/assets/css/main.css` and `tailwind.config.js` — global styles and design tokens.
-- `server/api/offers.get.ts` — `GET /api/offers`.
-- `server/api/purchase.post.ts` — validates and records a simulated purchase.
-- `server/api/restore.post.ts` — finds purchases associated with the current browser's device ID.
-- `server/utils/db.ts` — Neon connection and table initialization.
+   `DATABASE_URL=ваша_строка_подключения`
 
-## Deployment
+4. Запустить приложение: `npm run dev`.
 
-Deploy the repository to Vercel as a Nuxt project and add `DATABASE_URL` in the project's Environment Variables for Preview and Production. Redeploy after setting the variable. Neon provides managed Postgres; Vercel runs the Nuxt server routes, so this is not a static-only deployment.
+Таблица покупок создаётся автоматически при первом запросе на покупку или восстановление.
 
-## AI tools and manual checks
+## Структура проекта
 
-AI assistance was used to scaffold and implement the UI and server routes. Before submission, manually verify mobile layouts at 360 px and 430 px, plan selection, loading/error states, successful purchase persistence, and restore behavior in the deployed environment. Run `npm run build` before deployment.
+- `app/pages/index.vue` — интерфейс paywall, выбор тарифа и состояния покупки.
+- `app/assets/css/main.css` — глобальные стили.
+- `server/api/offers.get.ts` — получение тарифов (`GET /api/offers`).
+- `server/api/purchase.post.ts` — обработка и сохранение тестовой покупки (`POST /api/purchase`).
+- `server/api/restore.post.ts` — восстановление покупок (`POST /api/restore`).
+- `server/utils/db.ts` — подключение к PostgreSQL и создание таблицы.
+- `nuxt.config.ts` — конфигурация Nuxt.
 
-## If I had two more hours
+## База данных и деплой
 
-I would add automated API/component tests, improve accessibility and keyboard focus states, add basic request rate limiting, and verify the complete purchase/restore flow on a real mobile browser.
+Используется Neon Postgres — управляемая облачная PostgreSQL, доступная приложению как локально, так и после деплоя. Приложение развёртывается на Render как Node.js Web Service, поскольку серверные маршруты Nuxt должны выполняться на сервере.
+
+Для подключения к базе используется переменная окружения `DATABASE_URL`. Секреты не хранятся в репозитории.
+
+## AI-инструменты и проверка
+
+AI использовался для подготовки структуры проекта, реализации интерфейса и серверных маршрутов. Вручную проверены локальный запуск, выбор тарифа, тестовая покупка, запись в Neon и восстановление покупок.
+
+## Что можно улучшить
+
+При наличии дополнительного времени я бы добавил автоматические тесты API, улучшил доступность интерфейса, добавил защиту от повторных запросов и расширил обработку ошибок.
